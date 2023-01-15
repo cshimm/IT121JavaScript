@@ -3,13 +3,13 @@
 // 1.13.23
 
 // Grab user input
-let userInput = prompt("Please enter a word");
+let userInput = prompt("Pig Latin Translator: Please enter a word or phrase");
 
 // Reprompt if user input is empty
 while (userInput.length === 0){
-  userInput = prompt("Input cannot be empty. Please enter a word");
+  userInput = prompt("Input cannot be empty. Please enter a word or phrase");
 }
-// split userInput by spaces (" "), force input to lower case
+// split userInput by spaces (" "), force to lower case
 const splitInput = userInput.toLowerCase().split(" ");
 
 // define vowels to check against
