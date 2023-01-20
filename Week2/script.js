@@ -42,4 +42,3 @@ splitInput.forEach(word => {
   // Append result of pig latin translation to pig latin phrase
   pigLatinTranslation += (pigLatinWord + " ");
 })
-alert(`\"${userInput}\" translated into pig latin is: \"${pigLatinTranslation}\"`);
