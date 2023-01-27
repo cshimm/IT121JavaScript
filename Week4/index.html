@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>HW 4 - Pass / Fail</title>
+  <link href="../style.css" rel="stylesheet" type="text/css" />
+  <script src="https://code.jquery.com/jquery-3.6.3.min.js"></script>
+</head>
+
+<body>
+  <h1>Functions & validation</h1>
+
+  <form id="form1" action="#" onsubmit="return validateForm(this);">
+    first name: <input type="text" name="firstName"><br>
+    last name: <input type="text" name="lastName"><br>
+    password: <input type="text" name="password"><br>
+  
+    <button>Check</button>
+  </form>
+
+  <hr><div id="message"></div>
+  
+  <script>
+    const displayMessage = (message) => {
+      $("#message").html(message);
+    }
+    
+    const validatePassword = (password) => {
+      var isLongEnough = password.length >= 8;
+      if(!isLongEnough) return false;
+      
+      let hasUpper = false;
+      let hasLower = false;
+      const specialChars = "\\!@#$%^&*()-_=+\`~/?\|[]{};:,.\'\"<>"
+      
+      for (let i = 0; i < password.length; i++) {
+        //Prevent special characters from being evaluated as upper or lower case
+        if(specialChars.includes(password[i])) continue;  
+        
+        if (!hasUpper && password[i] == password[i].toUpperCase()){
+          hasUpper = true;
+        }
+        if(!hasLower && password[i] == password[i].toLowerCase()){
+          hasLower = true;
+        }
+
+        // No need to check the rest of the characters if hasUpper and hasLower are both set to true therefore break out of loop
+        if(hasUpper && hasLower) break;
+      }
+      
+      return hasUpper && hasLower;
+    }
+    
+    const validateForm = (myForm) => {
+      var firstName = myForm.firstName.value;
+      var lastName = myForm.lastName.value;
+
+      if(firstName === "" || lastName === ""){
+        displayMessage(`Not all fields filled out`);
+        return false;
+      }
+      
+      var password = myForm.password.value;
+      var isValidPassword = validatePassword(password);
+      if(isValidPassword){
+        displayMessage(`${firstName} ${lastName} logged in successfully.`)
+      }
+      else{
+        displayMessage(`Password is invalid`);
+        return false;
+      }
+      
+      return false;
+    }
+  </script>
+  
+  <br>
+  <a href="../index.html">Home</a>
+</body>
+
+</html>
