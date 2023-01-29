@@ -22,33 +22,38 @@
   <hr><div id="message"></div>
   
   <script>
+    //Define a function to display messages
     const displayMessage = (message) => {
       $("#message").html(message);
     }
     
     const validatePassword = (password) => {
-      var isLongEnough = password.length >= 8;
-      if(!isLongEnough) return false;
-      
+      // Check if password is long enough, if not return false early
+      if(password.length < 8) return false;
+
+      //Define variables to determine if pw has upper and lower case characters
       let hasUpper = false;
       let hasLower = false;
       const specialChars = "\\!@#$%^&*()-_=+\`~/?\|[]{};:,.\'\"<>"
-      
+
+      //Loop through the password characters
       for (let i = 0; i < password.length; i++) {
         //Prevent special characters from being evaluated as upper or lower case
         if(specialChars.includes(password[i])) continue;  
-        
+
+        //If a character is determined to be the same as that character but upper case, hasUpper will be true. only check if hasUpper is false
         if (!hasUpper && password[i] == password[i].toUpperCase()){
           hasUpper = true;
         }
+        //If a character is determined to be the same as that character but lower case, hasLower will be true. only check if hasLower is false
         if(!hasLower && password[i] == password[i].toLowerCase()){
           hasLower = true;
         }
 
-        // No need to check the rest of the characters if hasUpper and hasLower are both set to true therefore break out of loop
+        // No need to check the rest of the characters if hasUpper and hasLower are both set to true, therefore, break out of loop
         if(hasUpper && hasLower) break;
       }
-      
+      // returns true if hasUpper and hasLower are both true
       return hasUpper && hasLower;
     }
     
@@ -56,25 +61,26 @@
       var firstName = myForm.firstName.value;
       var lastName = myForm.lastName.value;
 
+      //if either first name or last name is empty, display error message and return early 
       if(firstName === "" || lastName === ""){
         displayMessage(`Not all fields filled out`);
         return false;
       }
       
       var password = myForm.password.value;
-      var isValidPassword = validatePassword(password);
-      if(isValidPassword){
+      
+      //validatePassword() will return either true or false after verifying if the password is at least 8 characters and has upper & lower case characters
+      if (validatePassword(password)){
         displayMessage(`${firstName} ${lastName} logged in successfully.`)
       }
-      else{
+      else {
+        //isValidPassword will be false if password is too short, or doesnt have both at least one upper and lower case character
         displayMessage(`Password is invalid`);
         return false;
       }
-      
       return false;
     }
   </script>
-  
   <br>
   <a href="../index.html">Home</a>
 </body>
