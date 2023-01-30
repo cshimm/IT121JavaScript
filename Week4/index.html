@@ -22,6 +22,10 @@
   <hr><div id="message"></div>
   
   <script>
+    //HW 4 - Pass / Fail
+    //Cameron Shimmin
+    //1/29/23
+    
     //Define a function to display messages
     const displayMessage = (message) => {
       $("#message").html(message);
@@ -60,14 +64,13 @@
     const validateForm = (myForm) => {
       var firstName = myForm.firstName.value;
       var lastName = myForm.lastName.value;
+      var password = myForm.password.value;
 
       //if either first name or last name is empty, display error message and return early 
-      if(firstName === "" || lastName === ""){
+      if(firstName === "" || lastName === "" || password === ""){
         displayMessage(`Not all fields filled out`);
         return false;
       }
-      
-      var password = myForm.password.value;
       
       //validatePassword() will return either true or false after verifying if the password is at least 8 characters and has upper & lower case characters
       if (validatePassword(password)){
