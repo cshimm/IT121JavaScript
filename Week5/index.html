@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>HW 5 - Robo dealer</title>
+  <script src="https://code.jquery.com/jquery-3.6.3.min.js"></script>
+</head>
+<body>
+
+  <h1>Robo Dealer</h1>
+
+  <button onclick="dealHand();">Deal Hand</button>
+
+  <hr><div id="card_hand"></div>
+
+<script>
+  // HW 5 - Robo Dealer
+  // Cameron Shimmin
+  // 2/2/23
+
+  //Create deck array to store all cards
+  let deck = []
+  const assignSuit = (suit) => {
+    let cardSuit = "";
+    //Switch on value passed in. The value passed in will be the position of the outer loop in the buildDeck() function
+    switch (suit) {
+    case 0:
+      cardSuit = "Hearts"
+      break;
+    case 1:
+      cardSuit = "Diamonds"
+      break;
+    case 2:
+      cardSuit = "Spades"
+      break;
+    case 3:
+      cardSuit = "Clubs"
+      break;
+  }
+    return cardSuit;
+  }
+  const assignValue = (value) => {
+      let cardValue = "";
+    //The value passed in will be the position of the inner loop in the buildDeck() function
+      if (value == 1) {
+      cardValue = "Ace";
+    } else if (value > 10) {
+        //Switch on all values greater than 10 to determine face card values
+        switch (value) {
+        case 11:
+          cardValue = "Jack";
+          break;
+        case 12:
+          cardValue = "Queen";
+          break;
+        case 13:
+          cardValue = "King";
+          break;
+      }
+    } else {
+        //If the value is not 1 and less than or equal to 10, just assign the value to return as the value parameter passed in
+      cardValue = value;
+    }
+    return cardValue;
+  }
+  const buildDeck = () => {
+    //Build deck with nested loops: outer loop will determine the suit, inner loop will determine the card's value
+      for (let i = 0; i < 4; i++) {
+        //Start the inner loop at 1 since there are no 0 cards
+        for (let j = 1; j <= 13; j++) {
+          let cardValue = assignValue(j)
+          let cardSuit = assignSuit(i)
+          
+          //Create card object then add it to the deck array
+          let card = { value: cardValue, suit: cardSuit }
+          deck.push(card)
+        }
+      }
+    }
+  //The deck will build when the page loads
+  buildDeck();
+  
+  const dealHand = () => {
+    for (let i = 0; i < 5; i++) {
+      //Generate a random number between 0 and the current length of the deck. 
+      //I did it this way because I remove each card from the deck that is drawn.
+      let randomCard = Math.floor(Math.random() * deck.length);
+      displayCard(deck[randomCard])
+      //Remove card from deck after displaying it to the screen. This ensures the card won't be drawn again.
+      deck.splice(randomCard, 1)
+    }
+    document.getElementById('card_hand').innerHTML += `<br>`
+    return false; // prevent page reload
+}
+  const displayCard = (card) => {
+      document.getElementById('card_hand').innerHTML += `* ${card.value} of ${card.suit} <br>`;
+  }
+</script>
+  <br>
+  <a href="../index.html">Home</a>
+</body>
+</html>
