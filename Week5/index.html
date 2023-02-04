@@ -40,7 +40,7 @@
   }
   const assignValue = (value) => {
       let cardValue = "";
-    //The value passed in will be the position of the inner loop in the buildDeck() function
+      //The value passed in will be the position of the inner loop in the buildDeck() function
       if (value == 1) {
       cardValue = "Ace";
     } else if (value > 10) {
@@ -57,7 +57,7 @@
           break;
       }
     } else {
-        //If the value is not 1 and less than or equal to 10, just assign the value to return as the value parameter passed in
+        //If the value is not 1 and less than or equal to 10, just assign the card value to return as the value parameter passed in
       cardValue = value;
     }
     return cardValue;
@@ -88,11 +88,13 @@
       //Remove card from deck after displaying it to the screen. This ensures the card won't be drawn again.
       deck.splice(randomCard, 1)
     }
+    //Add a break to distinguish different hands
     document.getElementById('card_hand').innerHTML += `<br>`
     return false; // prevent page reload
 }
   const displayCard = (card) => {
-      document.getElementById('card_hand').innerHTML += `* ${card.value} of ${card.suit} <br>`;
+    //Display formatted card information
+    document.getElementById('card_hand').innerHTML += `* ${card.value} of ${card.suit} <br>`;
   }
 </script>
   <br>
