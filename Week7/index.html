@@ -51,55 +51,49 @@
         ];
         var houses = new Set();
           
-        const clearTable = () => {
-          $("#table tbody tr").remove();
-        }
-          
         const displayHouse = (house = "") => {
-          clearTable();
-          buildTable(house);
-          $("tr:even").addClass("over");
-          $("tr:odd").addClass("selected");
-          $("thead > tr").addClass("selected")
+          $(`#table tbody tr`).show();
+          $("tr").removeClass("selected")
+          $("tr").removeClass("over")
+          
+          if (house != "") {
+            $(`#table tbody tr:not(.${house})`).hide();
+          }
+          $(`#table tbody tr:visible:even`).addClass("over");
+          $(`#table tbody tr:visible:odd`).addClass("selected");
+          // $("thead > tr").addClass("selected")
         }
           
-        const buildTable = (house = "") => {
-            var tableBody = $("#table > tbody");
+        const buildTable = () => {
+          var tableBody = $("#table > tbody");
           
-            characters.forEach((character) => {
-              if (character.house === house || house === "") {
-                var row = tableBody[0].insertRow();
-                var nameCell = row.insertCell(0);
-                var roleCell = row.insertCell(1);
-                var houseCell = row.insertCell(2);
-                var genderCell = row.insertCell(3)
-                var alignmentCell = row.insertCell(4);
-                
-                nameCell.innerHTML = character.name;
-                roleCell.innerHTML = character.role;
-                houseCell.innerHTML = character.house;
-                genderCell.innerHTML = character.gender;
-                alignmentCell.innerHTML = character.alignment;
-              }
-            });
+          characters.forEach((character) => {
+            var row = tableBody[0].insertRow();
+            let index = 0;
+            for (let characterValue of Object.values(character)) {
+              var cell = row.insertCell(index);
+              cell.innerHTML = characterValue;
+              index++;
+            }
+            populateHouses(character.house);
+            row.className = character.house;
+          });
           }
-              
-        const buildHouseButtons = () => {
-            characters.forEach((character) => {
-              if (character.house != "") {
-                houses.add(character.house)
-              }
-            });
-          
+        const populateHouses = (house) => {
+          if (house != "") {
+            houses.add(house)
+          }
+        }   
+        const buildHouseButtons = () => {          
           var buttonDiv = $("#buttons")
           
           houses.forEach((house) => {
             var button = document.createElement('button');
-            button.innerText = house;
-            
             button.addEventListener("click", () => {
               displayHouse(house);
             });
+            
+            button.innerText = house;
             buttonDiv[0].appendChild(button);
           });
         }
@@ -111,6 +105,7 @@
           });
         });
           
+        buildTable()
         buildHouseButtons();
         displayHouse()
         </script>
