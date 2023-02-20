@@ -27,41 +27,40 @@
         </table>
     </body>
         
-        <script>
+      <script>
         // Cameron Shimmin
         // HW 7 - Potterific
         // 2.18.23
           
         // list of characters
         var characters = [
-        {name:"Albus Dumbledore", role:"staff", house:"Gryffindor",gender:"m",alignment:"good"},    
-        {name:"Nymphadora Tonks", role:"", house:"Hufflepuff",gender:"f",alignment:"good"},    
-        {name:"Ron Weasley", role:"student", house:"Gryffindor",gender:"m",alignment:"good"},    
-        {name:"Ginny Weasley", role:"student", house:"Gryffindor",gender:"f",alignment:"good"},    
-        {name:"Hermione Granger", role:"student", house:"Gryffindor",gender:"f",alignment:"good"},    
-        {name:"Mad-eye Moody", role:"staff", house:"",gender:"m",alignment:"good"},    
-        {name:"Prof McGonagall", role:"staff", house:"Gryffindor",gender:"f",alignment:"good"},    
-        {name:"Harry Potter", role:"student", house:"Gryffindor",gender:"m",alignment:"good"},    
-        {name:"Draco Malfoy", role:"student", house:"Slytherin",gender:"m",alignment:"evil"},    
-        {name:"Hagrid", role:"staff", house:"Gryffindor",gender:"m",alignment:"good"},    
-        {name:"Luna Lovegood", role:"student", house:"Ravenclaw",gender:"f",alignment:"good"},    
-        {name:"Voldemort", role:"", house:"Slytherin",gender:"m",alignment:"evil"},    
-        {name:"Bellatrix Lestrange", role:"", house:"Slytherin",gender:"f",alignment:"evil"},           
-        {name:"Severus Snape", role:"staff", house:"Slytherin",gender:"m",alignment:"?"}
+          {name:"Albus Dumbledore", role:"staff", house:"Gryffindor",gender:"m",alignment:"good"},    
+          {name:"Nymphadora Tonks", role:"", house:"Hufflepuff",gender:"f",alignment:"good"},    
+          {name:"Ron Weasley", role:"student", house:"Gryffindor",gender:"m",alignment:"good"},    
+          {name:"Ginny Weasley", role:"student", house:"Gryffindor",gender:"f",alignment:"good"},    
+          {name:"Hermione Granger", role:"student", house:"Gryffindor",gender:"f",alignment:"good"},    
+          {name:"Mad-eye Moody", role:"staff", house:"",gender:"m",alignment:"good"},    
+          {name:"Prof McGonagall", role:"staff", house:"Gryffindor",gender:"f",alignment:"good"},    
+          {name:"Harry Potter", role:"student", house:"Gryffindor",gender:"m",alignment:"good"},    
+          {name:"Draco Malfoy", role:"student", house:"Slytherin",gender:"m",alignment:"evil"},    
+          {name:"Hagrid", role:"staff", house:"Gryffindor",gender:"m",alignment:"good"},    
+          {name:"Luna Lovegood", role:"student", house:"Ravenclaw",gender:"f",alignment:"good"},    
+          {name:"Voldemort", role:"", house:"Slytherin",gender:"m",alignment:"evil"},    
+          {name:"Bellatrix Lestrange", role:"", house:"Slytherin",gender:"f",alignment:"evil"},           
+          {name:"Severus Snape", role:"staff", house:"Slytherin",gender:"m",alignment:"?"}
         ];
         var houses = new Set();
           
-        const displayHouse = (house = "") => {
+        const displayHouse = (house = "all") => {
+          $("tr").removeClass("selected over").css("background-color", "");
           $(`#table tbody tr`).show();
-          $("tr").removeClass("selected")
-          $("tr").removeClass("over")
           
-          if (house != "") {
-            $(`#table tbody tr:not(.${house})`).hide();
-          }
-          $(`#table tbody tr:visible:even`).addClass("over");
-          $(`#table tbody tr:visible:odd`).addClass("selected");
-          // $("thead > tr").addClass("selected")
+          if (house != "all") {
+            $(`#table tbody tr:not(.${house})`).addClass("over").hide();
+          } 
+          $("#table tbody tr:visible").addClass("selected");
+          $(".selected:odd").css("background-color", "orange");
+          $("thead > tr").css("background-color", "grey");
         }
           
         const buildTable = () => {
@@ -70,31 +69,32 @@
           characters.forEach((character) => {
             var row = tableBody[0].insertRow();
             let index = 0;
+            
             for (let characterValue of Object.values(character)) {
               var cell = row.insertCell(index);
               cell.innerHTML = characterValue;
               index++;
             }
-            populateHouses(character.house);
-            row.className = character.house;
+            
+            var house = character.house;
+            row.className = house;
+            if (house != "") {
+              houses.add(house);
+            }
           });
-          }
-        const populateHouses = (house) => {
-          if (house != "") {
-            houses.add(house)
-          }
-        }   
+        }
+
         const buildHouseButtons = () => {          
-          var buttonDiv = $("#buttons")
+          var buttonDiv = $("#buttons");
           
           houses.forEach((house) => {
-            var button = document.createElement('button');
-            button.addEventListener("click", () => {
+            var houseButton = document.createElement('button');
+            houseButton.addEventListener("click", () => {
               displayHouse(house);
             });
             
-            button.innerText = house;
-            buttonDiv[0].appendChild(button);
+            houseButton.innerText = house;
+            buttonDiv[0].appendChild(houseButton);
           });
         }
           
@@ -103,10 +103,11 @@
           resetButton[0].addEventListener("click", () => {
             displayHouse()
           });
+          buildTable();
+          buildHouseButtons();
+          displayHouse();
         });
-          
-        buildTable()
-        buildHouseButtons();
-        displayHouse()
-        </script>
+      </script>
+      <br>
+      <a href="../index.html">Home</a>
 </html>
