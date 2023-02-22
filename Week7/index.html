@@ -10,7 +10,6 @@
             background-color: green;
         }
     </style>
-
     <body>
         <div id="buttons"></div>
         <button id="reset">reset</button>
@@ -26,7 +25,6 @@
             </tr>
         </table>
     </body>
-        
       <script>
         // Cameron Shimmin
         // HW 7 - Potterific
@@ -49,62 +47,77 @@
           {name:"Bellatrix Lestrange", role:"", house:"Slytherin",gender:"f",alignment:"evil"},           
           {name:"Severus Snape", role:"staff", house:"Slytherin",gender:"m",alignment:"?"}
         ];
-        var houses = new Set();
-          
+
         const displayHouse = (house = "all") => {
+          //Set table rows to defaults
           $("tr").removeClass("selected over").css("background-color", "");
+          //Show all rows
           $(`#table tbody tr`).show();
           
           if (house != "all") {
+            //This if check only runs when displayHouse is run with a house parameter passed into it
+            //Hide all of the houses that don't match the house param passed in
             $(`#table tbody tr:not(.${house})`).addClass("over").hide();
-          } 
+          }
+          //Set the rest of the visible houses to selected
           $("#table tbody tr:visible").addClass("selected");
           $(".selected:odd").css("background-color", "orange");
+          //Set the header row background color
           $("thead > tr").css("background-color", "grey");
         }
-          
-        const buildTable = () => {
+
+        //This function runs when the document is ready and builds the table from the characters set
+        const initializeTableAndButtons = () => {
           var tableBody = $("#table > tbody");
+          var houses = new Set();
           
           characters.forEach((character) => {
+            //create row on the table body and place on top
             var row = tableBody[0].insertRow();
-            let index = 0;
-            
+
+            //Loop through every character to get the values
             for (let characterValue of Object.values(character)) {
-              var cell = row.insertCell(index);
+              //Insert a cell for each value and place it behind the last cell
+              var cell = row.insertCell(-1);
               cell.innerHTML = characterValue;
-              index++;
             }
-            
+
+            //store character.house in a variable because i use it a few times
             var house = character.house;
+            //Set the class name for the character row to their house
             row.className = house;
-            if (house != "") {
+            
+            //Only add unique house values to the houses set.
+            //One of the character's house value is "" so I had to check for that as well
+            if (!houses.has(house) && house != "") {
               houses.add(house);
+              buildHouseButton(house);
             }
           });
         }
 
-        const buildHouseButtons = () => {          
+        //Build a button for each house and give it a click event
+        const buildHouseButton = (house) => {          
           var buttonDiv = $("#buttons");
           
-          houses.forEach((house) => {
-            var houseButton = document.createElement('button');
-            houseButton.addEventListener("click", () => {
-              displayHouse(house);
-            });
-            
-            houseButton.innerText = house;
-            buttonDiv[0].appendChild(houseButton);
+          var houseButton = document.createElement('button');
+          //Give each created button a click event that just runs displayHouse with the house parameter passed in from the for each loop in initializeTableAndButtons()
+          houseButton.addEventListener("click", () => {
+            displayHouse(house);
           });
+          
+          houseButton.innerText = house;
+          buttonDiv[0].appendChild(houseButton);
         }
           
         $(document).ready(function() {
+          //Grab the reset button and add a click event that displays all houses
           var resetButton = $("#reset")
           resetButton[0].addEventListener("click", () => {
             displayHouse()
           });
-          buildTable();
-          buildHouseButtons();
+          //Build table and display all houses
+          initializeTableAndButtons();
           displayHouse();
         });
       </script>
