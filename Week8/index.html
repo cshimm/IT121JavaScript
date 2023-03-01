@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <title>HW 8 - Sunny with a chance of awesome</title>
+</head>
+<body>
+  <form id="cityForm" onsubmit="handleSubmit()">
+    <label for="city">Enter a U.S. City:</label><br>
+    <input type="text" id="city" name="city" value="Springfield"><br>
+    <input type="submit" id="submitButton" value="Submit">
+  </form>
+  <br>
+  <div id="stateDiv"></div>
+</body>
+  <script>
+    const apiKey = '';
+    
+    const kelvinToF = (value) => {
+      let fahrenheit = (((Number(value) - 273.15) * 9) / 5) + 32;
+      return fahrenheit.toFixed(2);
+    }
+    
+    const getHighs = (city) => {
+      let fiveDayHighs = [];
+      for (let i = 0; i < 5; i++) {
+        let highest = 0;
+        for (let j = 0; j < 8; j++) {
+          if(city.city.list[j + (i * 8)].main.temp_max > highest) {
+              highest = city.city.list[j + (i * 8)].main.temp_max;
+          }
+        }
+        fiveDayHighs.push(kelvinToF(highest));
+      }
+        return fiveDayHighs;
+    }
+    
+    const getLows = (city) =>{
+      let fiveDayLows = [];
+      for (let i = 0; i < 5; i++) {
+        let lowest = 100000;
+        for (let j = 0; j < 8; j++) {
+          if(city.city.list[j + (i * 8)].main.temp_min < lowest) {
+              lowest = city.city.list[j + (i * 8)].main.temp_min;
+          }
+        }
+        fiveDayLows.push(kelvinToF(lowest));
+      }
+        return fiveDayLows;
+    }
+    
+    const displayCityForecast = (city) => {
+      console.log(city) //Console log
+      var stateDiv = $("#stateDiv");
+      
+      var cityDiv = document.createElement("div");
+      cityDiv.id = "city";
+      cityDiv.style.border = "solid 1px black";
+      cityDiv.style.margin = "0.5em";
+      cityDiv.style.padding = "0.5em";
+      
+      var nameText = document.createElement("p");
+      nameText.innerText = `${city.city.city.name}, ${city.state}`;
+      nameText.style.fontSize = "1.5em";
+      nameText.style.margin = "0 0 0.5em 0";
+      cityDiv.append(nameText);
+      stateDiv[0].append(cityDiv);
+      
+      var daysDiv = document.createElement("div");
+      daysDiv.id = "days";
+      cityDiv.append(daysDiv);
+      
+      var fiveDayHighs = getHighs(city);
+      var fiveDayLows = getLows(city);
+      for (let i = 0; i < 5; i++) {
+        var dayDiv = document.createElement("div");
+        dayDiv.id = "day";
+        
+        var dateText = document.createElement("p");
+        let forecastDate = new Date(city.city.list[i * 8].dt * 1000).toDateString().split(" ");
+        dateText.innerText = `${forecastDate[0]}, ${forecastDate[1]} ${parseInt(forecastDate[2])}, ${forecastDate[3]}`;
+        dateText.style.fontSize = "1.15em";
+        dateText.style.margin = "0.5em";
+        dayDiv.style.border = "dashed 1px black";
+        dayDiv.style.marginBottom = "0.5em";
+        dayDiv.style.padding = "0.25em";
+
+        var descriptionDiv = document.createElement("div");
+        descriptionDiv.id = "description";
+        descriptionDiv.style.display = "flex";
+        
+        var descriptionText = document.createElement("p");
+        var description = city.city.list[(i * 8) + 3].weather[0];
+        descriptionText.innerText = description.description[0].toUpperCase() + description.description.substr(1);
+        
+        var weatherIcon = document.createElement("img");
+        weatherIcon.src = `https://openweathermap.org/img/w/${description.icon}.png`;
+        
+        var tempsDiv = document.createElement("div");
+        tempsDiv.id = "temps";
+        tempsDiv.style.margin = " 0.15em 0.15em 0.15em 0.5em";
+        tempsDiv.innerHTML += `High: ${fiveDayHighs[i]}<br>`;
+        tempsDiv.innerHTML += `Low: ${fiveDayLows[i]}`;
+
+        var humidityText = document.createElement("p");
+        humidityText.innerText = `Humidity: ${city.city.list[i * 8].main.humidity}`;
+        humidityText.style.margin = " 0.15em 0.15em 0.15em 0.5em";
+        
+        dayDiv.append(dateText);
+        descriptionDiv.append(weatherIcon);
+        dayDiv.append(descriptionDiv);
+        descriptionDiv.append(descriptionText);
+        dayDiv.append(humidityText);
+        dayDiv.append(tempsDiv);
+        daysDiv.append(dayDiv);
+      }
+    }
+    
+    async function handleSubmit() {
+      var inputCity = $("input[type=text][name=city]").val();
+      var cities = await fetchCities(inputCity);
+      $("#stateDiv").children().remove();
+      
+      if(cities.length === 0){
+        var noResultsText = document.createElement("p")
+        noResultsText.innerText = `No Results for ${inputCity}! Please enter a US city.`;
+        $("#stateDiv").append(noResultsText);
+      }
+      
+      cities.forEach((city) => {
+        var c = fetchCity(city.lat, city.lon);
+        c.then(function(result) {
+          if(inputCity.toLowerCase() == result.city.name.toLowerCase()) {
+            var cityObj = {city: result, state: city.state};
+            displayCityForecast(cityObj);
+          } else if(cities.length == 1){
+            var newCity = result
+            newCity.city.name = inputCity;
+            var cityObj = {city: newCity, state: city.state};
+            displayCityForecast(cityObj);
+          }
+        });
+      });
+    }
+    
+    async function fetchCities(inputCity) {
+      try {
+        const response = await fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${inputCity},us&limit=5&appid=${apiKey}`);
+        const cities = await response.json();
+        return cities;
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    async function fetchCity(lat, lon) {
+      try {
+        const response = await fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}`);
+        const city = await response.json();
+        return await city;
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    
+    $(document).ready(function() {
+      $("#cityForm").submit((e) => e.preventDefault());
+      $("#stateDiv").css("display", "grid").css("grid-template-columns", "1fr 1fr")
+    });
+  </script>
+</html>
