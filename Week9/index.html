@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HW 9</title>
+</head>
+<body>
+<canvas id="myCanvas" width="640" height="480"></canvas>
+</body>
+  <script>
+    let canvas = document.getElementById('myCanvas')
+    canvas.style.border = "solid 1px black"
+    let ctx = canvas.getContext('2d')
+    // context.fillRect(20, 40, 100, 100)
+
+    ctx.beginPath();
+    ctx.arc(100, 75, 50, 0, 7/6 * Math.PI);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.arc(100, 55, 50, 0, -6/6 * Math.PI);
+    ctx.stroke();
+
+    // Define the points as {x, y}
+    let start = { x: 50, y: 20 };
+    let cp1 = { x: 230, y: 30 };
+    let cp2 = { x: 150, y: 80 };
+    let end = { x: 250, y: 100 };
+
+    // Cubic Bézier curve
+    ctx.beginPath();
+    ctx.moveTo(start.x, start.y);
+    ctx.bezierCurveTo(cp1.x, cp1.y, cp2.x, cp2.y, end.x, end.y);
+    ctx.stroke();
+  </script>
+</html>
