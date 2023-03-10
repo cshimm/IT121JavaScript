@@ -113,7 +113,9 @@
         $(document).ready(function() {
           //Grab the reset button and add a click event that displays all houses
           var resetButton = $("#reset")
-          resetButton[0].addEventListener("click", displayHouse());
+          resetButton[0].addEventListener("click", () => {
+            displayHouse();
+          });
           //Build table and display all houses
           initializeTableAndButtons();
           displayHouse();
