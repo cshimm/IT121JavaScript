@@ -1,0 +1,19 @@
+{
+  "name": "cameron-shimmin",
+  "version": "1.0.0",
+  "description": "IT 121 Javascript",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cshimm/IT121JavaScript.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cshimm/IT121JavaScript/issues"
+  },
+  "homepage": "https://github.com/cshimm/IT121JavaScript#readme"
+}
