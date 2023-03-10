@@ -7,32 +7,122 @@
   <title>HW 9</title>
 </head>
 <body>
-<canvas id="myCanvas" width="640" height="480"></canvas>
+<canvas id="myCanvas" width="640" height="480"></canvas> 
+  <br>
+  <button onclick="clearCanvas()">Clear</button>
+  <br>
+  <a href="../">Back</a>
 </body>
   <script>
     let canvas = document.getElementById('myCanvas')
     canvas.style.border = "solid 1px black"
-    let ctx = canvas.getContext('2d')
-    // context.fillRect(20, 40, 100, 100)
+    let ctx = canvas.getContext('2d');
+    function eraseCanvas() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+    function clearCanvas() {
+      eraseCanvas();
+      clearInterval(interval);
+    }
+    function getCursorPosition(canvas, event) {
+      const rect = canvas.getBoundingClientRect()
+      const x = event.clientX - rect.left
+      const y = event.clientY - rect.top
+      console.log("x: " + x + " y: " + y)
+    }
+    function drawBezierCurve(startX, startY, cp1X, cp1Y, cp2X, cp2Y, endX, endY, strokeStyle ="#000000") {    
+      // Define the points as {x, y}
+      let start = { x: startX, y: startY };
+      let cp1 = { x: cp1X, y: cp1Y };
+      let cp2 = { x: cp2X, y: cp2Y };
+      let end = { x: endX, y: endY };
+  
+      // Cubic Bézier curve
+      ctx.beginPath();
+      ctx.moveTo(start.x, start.y);
+      ctx.bezierCurveTo(cp1.x, cp1.y, cp2.x, cp2.y, end.x, end.y);
+      ctx.strokeStyle = `${strokeStyle}`
+      ctx.stroke();
+    }
 
-    ctx.beginPath();
-    ctx.arc(100, 75, 50, 0, 7/6 * Math.PI);
-    ctx.stroke();
+    canvas.addEventListener('mousedown', function(e) {
+      getCursorPosition(canvas, e);
+    });
 
-    ctx.beginPath();
-    ctx.arc(100, 55, 50, 0, -6/6 * Math.PI);
-    ctx.stroke();
+    function drawLine(startX, startY, endX, endY) {
+      ctx.moveTo(startX, startY); 
+      ctx.lineTo(endX, endY); 
+      ctx.stroke();
+    }
+    function drawRectangle(startX, startY, width, height) {
+      ctx.rect(startX, startY, width, height);
+      ctx.stroke();
+    }
 
-    // Define the points as {x, y}
-    let start = { x: 50, y: 20 };
-    let cp1 = { x: 230, y: 30 };
-    let cp2 = { x: 150, y: 80 };
-    let end = { x: 250, y: 100 };
+    function drawCircle(startX, startY, radius, startAngle = 0, endAngle = 2 * Math.PI, strokeStyle = '#000000') {
+      ctx.arc(startX, startY, radius, startAngle, endAngle);
+      ctx.strokeStyle = `${strokeStyle}`
+      ctx.stroke();
+    }
+    
+    function drawFillRect(startX, startY, width, height, color = "#FFFFFF") {
+      ctx.fillStyle = color;
+      ctx.fillRect(startX, startY, width, height);
+      ctx.stroke();
+    }
 
-    // Cubic Bézier curve
-    ctx.beginPath();
-    ctx.moveTo(start.x, start.y);
-    ctx.bezierCurveTo(cp1.x, cp1.y, cp2.x, cp2.y, end.x, end.y);
-    ctx.stroke();
+    function drawSun(startX, startY, radius, numRays) {
+      var now = new Date();
+      var second = now.getSeconds();
+      var ms = now.getMilliseconds();
+      const movementFactor = -10 * Math.cos(second);
+       //Sun
+      ctx.save()
+      drawCircle(startX, startY, radius, Math.PI, 2 * Math.PI, "#FFA000");
+      drawLine(534, 213, 608 + movementFactor, 196);
+      drawLine(496, 158, 535 - movementFactor, 98 + movementFactor);
+      drawLine(432, 140, 430, 55 - movementFactor);
+      drawLine(372, 155, 313 - movementFactor, 105 - movementFactor);
+      drawLine(325, 211, 263 + movementFactor, 181);
+      ctx.restore();
+    }
+    function drawBackground() {    
+      //Beach
+      drawBezierCurve(0, 260, 304, 279, 434, 277, 639, 304)
+  
+      //Horizon
+      drawLine(0, 247, 640, 256)
+    }
+    function drawStreet() {
+      // street right
+      drawBezierCurve(560, 480, 600, 375, 564, 289, 0, 270);
+      // street middle
+      drawBezierCurve(332, 488, 472, 284, 210, 285, 0, 275, "#FFB000");
+      // street left
+      drawBezierCurve(95, 480, 298, 346, 270, 282, 0, 279);
+      //White rectangles to create street dividers
+      drawFillRect(339, 440, 32, 20);
+      drawFillRect(339, 400, 32, 20);
+      drawFillRect(339, 358, 32, 20);
+      drawFillRect(339, 320, 32, 20);
+      
+      drawFillRect(300, 310, 32, 10);
+      drawFillRect(260, 300, 32, 5);
+      drawFillRect(220, 290, 32, 5);
+      
+      drawFillRect(175, 284, 24, 5);
+      drawFillRect(130, 280, 20, 5);
+      drawFillRect(83, 277, 20, 5);
+      drawFillRect(40, 275, 20, 5);
+      drawFillRect(3, 273, 15, 5);
+    }
+    function drawPicture() {
+      eraseCanvas();
+      drawSun(429, 252, 100, 6);
+      drawStreet();
+      drawBackground();
+    }
+
+    var interval = setInterval(drawPicture, 500);
   </script>
 </html>
